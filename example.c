@@ -22,7 +22,7 @@ int main()
     for (int i = 0; i < 10; i++)
     {
         // Add the foo() function to the thread pool queue, ready to run.
-        if (thread_pool_submit(&thread_pool, &foo, NULL))
+        if (!thread_pool_submit(&thread_pool, &foo, NULL))
         {
             puts("thread_pool_submit() failed");
             return -1;
