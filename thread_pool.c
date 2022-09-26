@@ -174,13 +174,13 @@ int thread_pool_init(thread_pool_t* thread_pool, uint8_t threads_count, uint32_t
 
     for (int i = 0; i < threads_count; i++)
     {
-        if (pthread_create(&thread_pool->threads[i], NULL, (void* (*)(void*)) &thread_loop, thread_pool))
+        if (pthread_create(&thread_pool->threads[i], NULL, (void* (*)(void*)) &thread_loop, (void*) thread_pool))
         {
             thread_pool_destroy(thread_pool);
             return 0;
         }
 
-        thread_pool->threads_count = i;
+        thread_pool->threads_count = i + 1;
     }
 
     return 1;
@@ -200,6 +200,7 @@ void thread_pool_destroy(thread_pool_t* thread_pool)
     queue_destroy(&thread_pool->pending_tasks);
     pthread_mutex_destroy(&thread_pool->mutex);
     pthread_cond_destroy(&thread_pool->condition_loop);
+    pthread_cond_destroy(&thread_pool->condition_wait);
 
     free(thread_pool->threads);
 }
